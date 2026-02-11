@@ -64,3 +64,14 @@ func Scan(path string) []string {
 	}
 	return files
 }
+
+func ConvertFromDir(path string, width, height int, output string) error {
+	files := Scan(path)
+	for _, file := range files {
+		err := Convert(file, width, height, output)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
