@@ -3,6 +3,8 @@ package utils
 import (
 	"image"
 	"os"
+	"path/filepath"
+	"strings"
 
 	_ "image/gif"
 	_ "image/jpeg"
@@ -37,4 +39,28 @@ func Convert(path string, width, height int, output string) error {
 	}
 
 	return nil
+}
+
+func Scan(path string) []string {
+	var files []string
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return files
+	}
+	extensions := map[string]bool{
+		".jpg":  true,
+		".jpeg": true,
+		".png":  true,
+		".gif":  true,
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			ext := strings.ToLower(filepath.Ext(entry.Name()))
+			if extensions[ext] {
+				fullPath := filepath.Join(path, entry.Name())
+				files = append(files, fullPath)
+			}
+		}
+	}
+	return files
 }
