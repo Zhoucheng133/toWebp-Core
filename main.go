@@ -34,6 +34,4 @@ func ConvertFromDir(path *C.char, width, height *C.int, output *C.char) *C.char 
 	return C.CString("OK")
 }
 
-func main() {
-	fmt.Println(utils.Scan("/Users/zhoucheng/Downloads/照片"))
-}
+func main() {}
