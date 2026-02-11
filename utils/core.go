@@ -66,9 +66,17 @@ func Scan(path string) []string {
 }
 
 func ConvertFromDir(path string, width, height int, output string) error {
+	if err := os.MkdirAll(output, 0755); err != nil {
+		return err
+	}
 	files := Scan(path)
 	for _, file := range files {
-		err := Convert(file, width, height, output)
+		baseName := filepath.Base(file)
+		ext := filepath.Ext(baseName)
+		outName := baseName[:len(baseName)-len(ext)] + ".webp"
+		targetPath := filepath.Join(output, outName)
+
+		err := Convert(file, width, height, targetPath)
 		if err != nil {
 			return err
 		}
