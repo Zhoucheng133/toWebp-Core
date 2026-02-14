@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"towebp_core/utils"
+
+	"github.com/ncruces/zenity"
 )
 import "C"
 
@@ -34,4 +37,21 @@ func ConvertFromDir(path *C.char, width, height *C.int, output *C.char) *C.char 
 	return C.CString("OK")
 }
 
-func main() {}
+func main() {
+
+	inputPath, err := zenity.SelectFile(
+		zenity.Title("选择文件"),
+		zenity.FileFilters{
+			{Name: "图片文件", Patterns: []string{"*.jpeg", "*.jpg", "*.png"}},
+		},
+	)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	baseName := filepath.Base(inputPath)
+	ext := filepath.Ext(baseName)
+	outName := baseName[:len(baseName)-len(ext)] + ".webp"
+	utils.Convert(inputPath, 0, 1000, outName)
+}
