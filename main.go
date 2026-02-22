@@ -11,8 +11,8 @@ import (
 import "C"
 
 //export Convert
-func Convert(path *C.char, width, height *C.int, output *C.char) *C.char {
-	err := utils.Convert(C.GoString(path), int(C.int(*width)), int(C.int(*height)), C.GoString(output))
+func Convert(path *C.char, width, height *C.int, output *C.char, quality *C.int) *C.char {
+	err := utils.Convert(C.GoString(path), int(C.int(*width)), int(C.int(*height)), C.GoString(output), int(C.int(*quality)))
 	if err != nil {
 		return C.CString(fmt.Sprint("ERR: ", err.Error()))
 	}
@@ -29,8 +29,8 @@ func Scan(path *C.char) *C.char {
 }
 
 //export ConvertFromDir
-func ConvertFromDir(path *C.char, width, height *C.int, output *C.char) *C.char {
-	err := utils.ConvertFromDir(C.GoString(path), int(C.int(*width)), int(C.int(*height)), C.GoString(output))
+func ConvertFromDir(path *C.char, width, height *C.int, output *C.char, quality *C.int) *C.char {
+	err := utils.ConvertFromDir(C.GoString(path), int(C.int(*width)), int(C.int(*height)), C.GoString(output), int(C.int(*quality)))
 	if err != nil {
 		return C.CString(fmt.Sprint("ERR: ", err.Error()))
 	}
@@ -53,5 +53,5 @@ func main() {
 	baseName := filepath.Base(inputPath)
 	ext := filepath.Ext(baseName)
 	outName := baseName[:len(baseName)-len(ext)] + ".webp"
-	utils.Convert(inputPath, 0, 1000, outName)
+	utils.Convert(inputPath, 0, 1000, outName, 80)
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/disintegration/imaging"
 )
 
-func Convert(path string, width, height int, output string) error {
+func Convert(path string, width, height int, output string, quality int) error {
 	src, err := imaging.Open(path, imaging.AutoOrientation(true))
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func Convert(path string, width, height int, output string) error {
 		return err
 	}
 	defer outFile.Close()
-	err = webp.Encode(outFile, dst, &webp.Options{Lossless: false, Quality: 80})
+	err = webp.Encode(outFile, dst, &webp.Options{Lossless: false, Quality: float32(quality)})
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func Scan(path string) []string {
 	return files
 }
 
-func ConvertFromDir(path string, width, height int, output string) error {
+func ConvertFromDir(path string, width, height int, output string, quality int) error {
 	if err := os.MkdirAll(output, 0755); err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func ConvertFromDir(path string, width, height int, output string) error {
 		outName := baseName[:len(baseName)-len(ext)] + ".webp"
 		targetPath := filepath.Join(output, outName)
 
-		err := Convert(file, width, height, targetPath)
+		err := Convert(file, width, height, targetPath, quality)
 		if err != nil {
 			return err
 		}
