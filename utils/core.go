@@ -19,14 +19,16 @@ func Convert(path string, width, height int, output string, quality int) error {
 		return err
 	}
 
-	dst := imaging.Resize(src, width, height, imaging.Lanczos)
+	if width > 0 || height > 0 {
+		src = imaging.Resize(src, width, height, imaging.Lanczos)
+	}
 
 	outFile, err := os.Create(output)
 	if err != nil {
 		return err
 	}
 	defer outFile.Close()
-	err = webp.Encode(outFile, dst, &webp.Options{Lossless: false, Quality: float32(quality)})
+	err = webp.Encode(outFile, src, &webp.Options{Lossless: false, Quality: float32(quality)})
 	if err != nil {
 		return err
 	}
